@@ -1659,8 +1659,12 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
 		strbuf_addstr(&buf, "...");
 		strbuf_addstr(&buf, branch_name);
 		options.onto_name = xstrdup(buf.buf);
-	} else if (!options.onto_name)
+	} else if (!options.onto_name) {
 		options.onto_name = options.upstream_name;
+	} else if (options.upstream) {
+		options.restrict_revision = options.upstream;
+		options.upstream = NULL;
+	}
 	if (strstr(options.onto_name, "...")) {
 		if (get_oid_mb(options.onto_name, &branch_base) < 0) {
 			if (keep_base)
